@@ -1,76 +1,225 @@
+//==============================
+// HTML要素を取得
+//==============================
+
 const typeSelect = document.getElementById("type");
 const fieldsDiv = document.getElementById("fields");
 const output = document.getElementById("output");
+const generateButton = document.getElementById("generate");
 
-// プルダウン作成
+
+//==============================
+// ブロックタイプ一覧を作成
+//==============================
+
 for(const type in BLOCK_TYPES){
 
-    const option=document.createElement("option");
+    const option = document.createElement("option");
 
-    option.value=type;
-    option.textContent=type;
+    option.value = type;
+    option.textContent = type;
 
     typeSelect.appendChild(option);
 
 }
 
-// 入力欄生成
+
+//==============================
+// 入力欄を作成
+//==============================
+
 function createFields(){
 
-    fieldsDiv.innerHTML="";
+    // 一旦削除
+    fieldsDiv.innerHTML = "";
 
-    const block=BLOCK_TYPES[typeSelect.value];
+    // 共通項目 + ブロック固有項目
+    const fields = [
+        ...COMMON_FIELDS,
+        ...BLOCK_TYPES[typeSelect.value].fields
+    ];
 
-    block.fields.forEach(field=>{
+    fields.forEach(field=>{
 
-        const label=document.createElement("label");
-
-        label.textContent=field.label;
-
-        const input=document.createElement("input");
-
-        input.type=field.type;
-
-        input.id=field.key;
-
-        if(field.value!==undefined)
-            input.value=field.value;
+        // ラベル
+        const label = document.createElement("label");
+        label.textContent = field.label;
 
         fieldsDiv.appendChild(label);
 
-        fieldsDiv.appendChild(document.createElement("br"));
+        let input;
+
+        //==========================
+        // テキストエリア
+        //==========================
+
+        if(field.type == "textarea"){
+
+            input = document.createElement("textarea");
+
+            input.rows = 4;
+
+        }
+
+        //==========================
+        // プルダウン
+        //==========================
+
+        else if(field.type == "select"){
+
+            input = document.createElement("select");
+
+            field.options.forEach(optionText=>{
+
+                const option = document.createElement("option");
+
+                option.value = optionText;
+                option.textContent = optionText;
+
+                input.appendChild(option);
+
+            });
+
+        }
+
+        //==========================
+        // チェックボックス
+        //==========================
+
+        else if(field.type == "checkbox"){
+
+            input = document.createElement("input");
+
+            input.type = "checkbox";
+
+            input.checked = field.default;
+
+        }
+
+        //==========================
+        // 通常入力
+        //==========================
+
+        else{
+
+            input = document.createElement("input");
+
+            input.type = field.type;
+
+            input.value = field.default;
+
+        }
+
+        // ID設定
+        input.id = field.key;
 
         fieldsDiv.appendChild(input);
 
         fieldsDiv.appendChild(document.createElement("br"));
-
         fieldsDiv.appendChild(document.createElement("br"));
 
     });
 
 }
 
-typeSelect.onchange=createFields;
 
-createFields();
-
+//==============================
 // HJSON生成
-document.getElementById("generate").onclick=()=>{
+//==============================
 
-    const block=BLOCK_TYPES[typeSelect.value];
+function generateHjson(){
 
-    let text="";
+    let text = "";
 
-    text+="type: "+typeSelect.value+"\n";
+    // typeは必ず出力
+    text += "type: " + typeSelect.value + "\n";
 
-    block.fields.forEach(field=>{
+    // 共通＋固有
+    const fields = [
+        ...COMMON_FIELDS,
+        ...BLOCK_TYPES[typeSelect.value].fields
+    ];
 
-        const value=document.getElementById(field.key).value;
+    fields.forEach(field=>{
 
-        text+=field.key+": "+value+"\n";
+        const element = document.getElementById(field.key);
+
+        let value;
+
+        // チェックボックス
+        if(field.type=="checkbox"){
+
+            value = element.checked;
+
+        }else{
+
+            value = element.value;
+
+        }
+
+        // 空欄なら出力しない
+        if(value==="" || value==null) return;
+
+        //------------------------------------
+        // descriptionだけ特殊
+        //------------------------------------
+
+        if(field.key=="description"){
+
+            text +=
+`description:
+'''
+${value}
+'''
+`;
+
+            return;
+        }
+
+        //------------------------------------
+        // textarea
+        //------------------------------------
+
+        if(field.type=="textarea"){
+
+            text += field.key + ":\n";
+
+            text += "[\n";
+
+            value.split("\n").forEach(line=>{
+
+                if(line.trim()!="")
+                    text += "    " + line + "\n";
+
+            });
+
+            text += "]\n";
+
+            return;
+        }
+
+        //------------------------------------
+        // 通常
+        //------------------------------------
+
+        text += field.key + ": " + value + "\n";
 
     });
 
-    output.value=text;
+    output.value = text;
 
-};
+}
+
+
+//==============================
+// イベント
+//==============================
+
+// タイプ変更
+typeSelect.addEventListener("change",createFields);
+
+// 生成ボタン
+generateButton.addEventListener("click",generateHjson);
+
+// 初回表示
+createFields();
