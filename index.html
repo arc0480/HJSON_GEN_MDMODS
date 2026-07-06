@@ -1,87 +1,30 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>HJSON Generator</title>
+    <meta charset="UTF-8">
+    <title>Mindustry HJSON Generator</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- ブロックタイプ -->
-<label>タイプ</label>
-<select id="type">
-    <option value="GenericCrafter">GenericCrafter</option>
-    <option value="Separator">Separator</option>
-    <option value="AttributeCrafter">AttributeCrafter</option>
-    <option value="Drill">Drill</option>
-    <option value="Wall">Wall</option>
-    <option value="ItemTurret">ItemTurret</option>
-    <option value="PowerGenerator">PowerGenerator</option>
-</select>
+<h1>Mindustry HJSON Generator</h1>
 
-<br><br>
+<label>ブロックタイプ</label>
+<select id="type"></select>
 
-<!-- ブロック名 -->
-<label>名前</label>
-<input id="name" value="ベイクマシン">
+<hr>
 
-<br><br>
+<div id="fields"></div>
 
-<!-- ブロックサイズ -->
-<label>サイズ</label>
-<input id="size" type="number" value="2">
+<button id="generate">生成</button>
 
-<br><br>
+<h2>生成結果</h2>
 
-<!-- クラフト時間 -->
-<label>クラフト時間</label>
-<input id="craftTime" type="number" value="120">
+<textarea id="output"></textarea>
 
-<br><br>
-
-<!-- 消費電力 -->
-<label>消費電力</label>
-<input id="power" type="number" value="105">
-
-<br><br>
-
-<button onclick="generate()">HJSON生成</button>
-
-<br><br>
-
-<!-- 生成結果 -->
-<textarea id="output" rows="20" cols="80"></textarea>
-
-<script>
-
-function generate(){
-
-    // プルダウンからタイプを取得
-    const type = document.getElementById("type").value;
-
-    // 各入力欄の値を取得
-    const name = document.getElementById("name").value;
-    const size = document.getElementById("size").value;
-    const craftTime = document.getElementById("craftTime").value;
-    const power = document.getElementById("power").value;
-
-    // HJSONを組み立てる
-    const hjson = `type: ${type}
-name: ${name}
-
-size: ${size}
-
-craftTime: ${craftTime}
-
-consumes: {
-    power: ${power}
-}
-`;
-
-    // テキストエリアへ出力
-    document.getElementById("output").value = hjson;
-}
-
-</script>
+<script src="blockTypes.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
