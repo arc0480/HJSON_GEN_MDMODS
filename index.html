@@ -6,32 +6,70 @@
 </head>
 <body>
 
-<div>
-    Type <input id="type" value="GenericCrafter"><br>
-    Name <input id="name" value="ベイクマシン"><br>
-    Size <input id="size" value="2"><br>
-    CraftTime <input id="craftTime" value="120"><br>
-    Power <input id="power" value="105"><br>
-</div>
-
-<button onclick="generate()">生成</button>
+<!-- ブロックタイプ -->
+<label>タイプ</label>
+<select id="type">
+    <option value="GenericCrafter">GenericCrafter</option>
+    <option value="Separator">Separator</option>
+    <option value="AttributeCrafter">AttributeCrafter</option>
+    <option value="Drill">Drill</option>
+    <option value="Wall">Wall</option>
+    <option value="ItemTurret">ItemTurret</option>
+    <option value="PowerGenerator">PowerGenerator</option>
+</select>
 
 <br><br>
 
-<textarea id="output" cols="80" rows="20"></textarea>
+<!-- ブロック名 -->
+<label>名前</label>
+<input id="name" value="ベイクマシン">
+
+<br><br>
+
+<!-- ブロックサイズ -->
+<label>サイズ</label>
+<input id="size" type="number" value="2">
+
+<br><br>
+
+<!-- クラフト時間 -->
+<label>クラフト時間</label>
+<input id="craftTime" type="number" value="120">
+
+<br><br>
+
+<!-- 消費電力 -->
+<label>消費電力</label>
+<input id="power" type="number" value="105">
+
+<br><br>
+
+<button onclick="generate()">HJSON生成</button>
+
+<br><br>
+
+<!-- 生成結果 -->
+<textarea id="output" rows="20" cols="80"></textarea>
 
 <script>
+
 function generate(){
 
-const type = document.getElementById("type").value;
-const name = document.getElementById("name").value;
-const size = document.getElementById("size").value;
-const craftTime = document.getElementById("craftTime").value;
-const power = document.getElementById("power").value;
+    // プルダウンからタイプを取得
+    const type = document.getElementById("type").value;
 
-const hjson = `type: ${type}
+    // 各入力欄の値を取得
+    const name = document.getElementById("name").value;
+    const size = document.getElementById("size").value;
+    const craftTime = document.getElementById("craftTime").value;
+    const power = document.getElementById("power").value;
+
+    // HJSONを組み立てる
+    const hjson = `type: ${type}
 name: ${name}
+
 size: ${size}
+
 craftTime: ${craftTime}
 
 consumes: {
@@ -39,9 +77,10 @@ consumes: {
 }
 `;
 
-document.getElementById("output").value = hjson;
-
+    // テキストエリアへ出力
+    document.getElementById("output").value = hjson;
 }
+
 </script>
 
 </body>
