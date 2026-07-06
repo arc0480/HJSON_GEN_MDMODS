@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>HJSON Generator</title>
+</head>
+<body>
+
+<div>
+    Type <input id="type" value="GenericCrafter"><br>
+    Name <input id="name" value="ベイクマシン"><br>
+    Size <input id="size" value="2"><br>
+    CraftTime <input id="craftTime" value="120"><br>
+    Power <input id="power" value="105"><br>
+</div>
+
+<button onclick="generate()">生成</button>
+
+<br><br>
+
+<textarea id="output" cols="80" rows="20"></textarea>
+
+<script>
+function generate(){
+
+const type = document.getElementById("type").value;
+const name = document.getElementById("name").value;
+const size = document.getElementById("size").value;
+const craftTime = document.getElementById("craftTime").value;
+const power = document.getElementById("power").value;
+
+const hjson = `type: ${type}
+name: ${name}
+size: ${size}
+craftTime: ${craftTime}
+
+consumes: {
+    power: ${power}
+}
+`;
+
+document.getElementById("output").value = hjson;
+
+}
+</script>
+
+</body>
+</html>
