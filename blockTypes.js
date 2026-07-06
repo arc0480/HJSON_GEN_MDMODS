@@ -29,6 +29,12 @@ const BLOCK_TYPES = {
                 label:"消費電力",
                 type:"number",
                 value:105
+            },
+            {
+                key:"category",
+                label:"カテゴリ",
+                type:"text",
+                value:defence
             }
 
         ]
